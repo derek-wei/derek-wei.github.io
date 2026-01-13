@@ -3,73 +3,50 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Derek Wei — Portfolio</title>
+  <title>Projects — Derek Wei</title>
   <link rel="stylesheet" href="/styles/main.css" />
 </head>
 <body>
   <div class="container">
-    <nav>
-      <div class="left">
-        <div class="brand">Derek Wei</div>
-        <a href="/" class="btn">Home</a>
-        <a href="/projects/" class="btn">Projects</a>
+    <div class="nav">
+      <a href="/">Home</a>
+      <span>|</span>
+      <a href="/projects/">Projects</a>
+      <span>|</span>
+      <a href="https://github.com/derek-wei">GitHub</a>
+    </div>
+
+    <h1>Projects</h1>
+    <p class="subhead">Click a project card to open the full write-up.</p>
+
+    <div class="hr"></div>
+
+    <a class="card" href="/projects/robot.html">
+      <div class="cardText">
+        <div class="cardTitle">‘M.O.’ — Autonomous Collection Robot</div>
+        <div class="cardMeta">2025</div>
+        <p class="cardDesc">Autonomous detection + retrieval robot with ESP32 control, line following, and a custom KiCad PCB.</p>
       </div>
-      <div class="left">
-        <a href="mailto:derekwei999@gmail.com" class="btn">Email</a>
-        <a href="https://github.com/derek-wei" class="btn">GitHub</a>
+      <img class="thumb" src="/images/robot.jpg" alt="Robot project image">
+    </a>
+
+    <a class="card" href="/projects/eeg.html">
+      <div class="cardText">
+        <div class="cardTitle">Electroencephalogram Circuit</div>
+        <div class="cardMeta">2025</div>
+        <p class="cardDesc">µV-level EEG front-end with amplification + HP/LP/notch filtering; verified in LTSpice and built on PCB.</p>
       </div>
-    </nav>
+      <img class="thumb" src="/images/eeg.webp" alt="EEG project image">
+    </a>
 
-    <section class="hero">
-      <h1>Engineering projects (hardware, IC design, instrumentation)</h1>
-      <p class="small">
-        UBC Engineering Physics · Electrical specialization · Robotics + analog IC design
-      </p>
-
-      <div class="badges">
-        <div class="badge">KiCad</div>
-        <div class="badge">Cadence Virtuoso</div>
-        <div class="badge">C/C++</div>
-        <div class="badge">LTSpice</div>
-        <div class="badge">PCB Design</div>
+    <a class="card" href="/projects/opamp.html">
+      <div class="cardText">
+        <div class="cardTitle">Op-amp Integrated Circuit Design</div>
+        <div class="cardMeta">2025</div>
+        <p class="cardDesc">Two-stage diff-to-single-ended CMOS op-amp with CMFB and compensation in 45 nm Cadence Virtuoso.</p>
       </div>
-    </section>
-
-    <section>
-      <h2>Featured Projects</h2>
-      <div class="grid">
-        <div class="card">
-          <img src="/images/robot.jpg" alt="Autonomous Collection Robot" />
-          <div class="pad">
-            <h3>Autonomous Collection Robot</h3>
-            <p class="meta">ESP32 control · line following · custom PCB</p>
-            <a href="/projects/robot.html">Read more →</a>
-          </div>
-        </div>
-
-        <div class="card">
-          <img src="/images/eeg.jpg" alt="Electroencephalogram Circuit" />
-          <div class="pad">
-            <h3>Electroencephalogram Circuit</h3>
-            <p class="meta">µV signals · filters · noise-aware PCB</p>
-            <a href="/projects/eeg.html">Read more →</a>
-          </div>
-        </div>
-
-        <div class="card">
-          <img src="/images/opamp.jpg" alt="Op-amp IC design" />
-          <div class="pad">
-            <h3>Op-amp Integrated Circuit Design</h3>
-            <p class="meta">2-stage CMOS op-amp · CMFB · 45 nm</p>
-            <a href="/projects/opamp.html">Read more →</a>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <footer>
-      <div>Hosted on GitHub Pages · © Derek Wei</div>
-    </footer>
+      <img class="thumb" src="/images/opamp.png" alt="Op-amp project image">
+    </a>
   </div>
 </body>
 </html>
