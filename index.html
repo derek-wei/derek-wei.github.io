@@ -1,10 +1,75 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
 <head>
-  <title>Derek Wei</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Derek Wei — Portfolio</title>
+  <link rel="stylesheet" href="/styles/main.css" />
 </head>
 <body>
-  <h1>Derek Wei</h1>
-  <p>My GitHub Pages site is live.</p>
+  <div class="container">
+    <nav>
+      <div class="left">
+        <div class="brand">Derek Wei</div>
+        <a href="/" class="btn">Home</a>
+        <a href="/projects/" class="btn">Projects</a>
+      </div>
+      <div class="left">
+        <a href="mailto:derekwei999@gmail.com" class="btn">Email</a>
+        <a href="https://github.com/derek-wei" class="btn">GitHub</a>
+      </div>
+    </nav>
+
+    <section class="hero">
+      <h1>Engineering projects (hardware, IC design, instrumentation)</h1>
+      <p class="small">
+        UBC Engineering Physics · Electrical specialization · Robotics + analog IC design
+      </p>
+
+      <div class="badges">
+        <div class="badge">KiCad</div>
+        <div class="badge">Cadence Virtuoso</div>
+        <div class="badge">C/C++</div>
+        <div class="badge">LTSpice</div>
+        <div class="badge">PCB Design</div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Featured Projects</h2>
+      <div class="grid">
+        <div class="card">
+          <img src="/images/robot.jpg" alt="Autonomous Collection Robot" />
+          <div class="pad">
+            <h3>Autonomous Collection Robot</h3>
+            <p class="meta">ESP32 control · line following · custom PCB</p>
+            <a href="/projects/robot.html">Read more →</a>
+          </div>
+        </div>
+
+        <div class="card">
+          <img src="/images/eeg.jpg" alt="Electroencephalogram Circuit" />
+          <div class="pad">
+            <h3>Electroencephalogram Circuit</h3>
+            <p class="meta">µV signals · filters · noise-aware PCB</p>
+            <a href="/projects/eeg.html">Read more →</a>
+          </div>
+        </div>
+
+        <div class="card">
+          <img src="/images/opamp.jpg" alt="Op-amp IC design" />
+          <div class="pad">
+            <h3>Op-amp Integrated Circuit Design</h3>
+            <p class="meta">2-stage CMOS op-amp · CMFB · 45 nm</p>
+            <a href="/projects/opamp.html">Read more →</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <div>Hosted on GitHub Pages · © Derek Wei</div>
+    </footer>
+  </div>
 </body>
 </html>
