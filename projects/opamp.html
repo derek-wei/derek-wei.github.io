@@ -3,33 +3,349 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Op-amp IC Design — Derek Wei</title>
-  <link rel="stylesheet" href="/styles/main.css" />
+  <title>ELEC 401: Two-Stage Operational Amplifier Design</title>
+
+  <!-- MathJax (LaTeX rendering in HTML) -->
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']],
+        processEscapes: true
+      },
+      options: { renderActions: { addMenu: [] } }
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+
+  <style>
+    :root{
+      --text:#111827;
+      --muted:#6b7280;
+      --border:#e5e7eb;
+      --card:#f9fafb;
+    }
+    body{
+      margin:0;
+      font:16px/1.65 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      color:var(--text);
+      background:#fff;
+    }
+    .page{
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 0 16px 80px;
+    }
+    header{
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 14px;
+      margin-bottom: 28px;
+    }
+    .course-line{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      align-items:flex-start;
+      color:var(--muted);
+      font-size:14px;
+    }
+    h1{
+      font-size:28px;
+      margin:10px 0 4px;
+      line-height:1.2;
+      letter-spacing:-0.02em;
+    }
+    .author{
+      color:var(--muted);
+      font-size:14px;
+    }
+    h2{
+      font-size:20px;
+      margin:34px 0 10px;
+      line-height:1.25;
+      letter-spacing:-0.01em;
+    }
+    h3{
+      font-size:16px;
+      margin:18px 0 8px;
+      line-height:1.3;
+    }
+    p{ margin:10px 0; }
+    figure{
+      margin: 18px 0;
+      padding: 14px;
+      border: 1px solid var(--border);
+      background: var(--card);
+      border-radius: 12px;
+    }
+    figure img{
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 8px;
+    }
+    figcaption{
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    table{
+      width:100%;
+      border-collapse:collapse;
+      margin: 14px 0 18px;
+      border:1px solid var(--border);
+      border-radius:12px;
+      overflow:hidden;
+      background:#fff;
+    }
+    th, td{
+      text-align:left;
+      padding:10px 12px;
+      border-bottom:1px solid var(--border);
+      vertical-align:top;
+    }
+    th{
+      background:var(--card);
+      font-weight:650;
+    }
+    tr:last-child td{ border-bottom:none; }
+    .math-block{ overflow-x:auto; padding:10px 0; }
+    footer{
+      position:fixed;
+      left:0; right:0; bottom:0;
+      background:rgba(255,255,255,0.92);
+      backdrop-filter: blur(8px);
+      border-top:1px solid var(--border);
+    }
+    footer .foot{
+      max-width:900px;
+      margin:0 auto;
+      padding:10px 16px;
+      display:flex;
+      justify-content:space-between;
+      color:var(--muted);
+      font-size:13px;
+    }
+    @media print{
+      footer{ position:static; }
+      .page{ padding-bottom:0; margin:0 auto; }
+      header{ border:none; }
+      figure, table{ break-inside: avoid; }
+    }
+  </style>
 </head>
+
 <body>
-  <div class="container">
-    <p><a href="/" style="color:#2563eb;">← Back</a></p>
-    <h1>Op-amp Integrated Circuit Design</h1>
-    <p class="subhead">2025 · Solo Project · UBC</p>
+  <div class="page">
 
-    <div class="card" style="display:block;">
-      <img class="thumb" style="width:100%;height:320px;" src="/images/opamp.png" alt="Op-amp image">
-      <div class="cardText" style="padding-top:14px;">
-        <h2>Highlights</h2>
-        <ul>
-          <li>Two-stage differential-to-single-ended op-amp with common-mode feedback. :contentReference[oaicite:14]{index=14}</li>
-          <li>Simulated using 45-nm CMOS process in Cadence Virtuoso. :contentReference[oaicite:15]{index=15}</li>
-          <li>Generated open/closed-loop Bode plots for verification. :contentReference[oaicite:16]{index=16}</li>
-          <li>&gt;550 MHz transit frequency, 46.4 dB gain, 50° PM, &lt;0.4 mW. :contentReference[oaicite:17]{index=17}</li>
-        </ul>
-
-        <h2>Media / Links</h2>
-        <ul>
-          <li><a href="#" style="color:#2563eb;">Design notes / plots</a> (add)</li>
-          <li><a href="#" style="color:#2563eb;">GitHub repo</a> (add)</li>
-        </ul>
+    <header>
+      <div class="course-line">
+        <div>ELEC 401</div>
+        <div>Two-Stage Op-amp</div>
+        <div>
+          <div>Derek Wei</div>
+          <div>53485314</div>
+        </div>
       </div>
-    </div>
+      <h1>ELEC 401: Two-Stage Operational Amplifier Design</h1>
+      <div class="author">Derek Wei — 53485314</div>
+    </header>
+
+    <main>
+
+      <h2>Design Overview and Objectives</h2>
+
+      <p>
+        The objective of this project is to design and simulate a differential two-stage CMOS operational amplifier in cadence virtuoso.
+        Sizing of transistors and component values were chosen and tested to optimize for open-loop gain, unity-gain frequency, phase margin,
+        output swing, circuit power, and slew rate.
+        We will use the topology shown below.
+      </p>
+
+      <figure>
+        <img src="images/opamp_photos/schematic.png" alt="Op-amp schematic">
+        <figcaption>Figure 1: Op-amp Schematic</figcaption>
+      </figure>
+
+      <p>The target performance specifications are shown below.</p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Specification</th>
+            <th>Value</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>$V_{DD}$</td><td>1.0 V</td></tr>
+          <tr><td>GND</td><td>0 V</td></tr>
+          <tr><td>Load capacitance $C_L$</td><td>2 pF</td></tr>
+          <tr><td>Nominal input common-mode (DC level)</td><td>$V_{DD}/2$</td></tr>
+          <tr><td>Nominal output common-mode (DC level)</td><td>$V_{DD}/2$</td></tr>
+          <tr><td>Two-stage power consumption</td><td>$\leq 0.4$ mW</td></tr>
+          <tr><td>CMFB circuit power</td><td>$\leq 40~\mu$W</td></tr>
+          <tr><td>Differential output swing</td><td>$\geq 0.75$ V</td></tr>
+          <tr><td>Low-frequency differential gain</td><td>$\geq 46$ dB</td></tr>
+          <tr><td>Small-signal unity-gain frequency</td><td>$\geq 600$ MHz</td></tr>
+          <tr><td>Phase margin</td><td>$60^\circ \leq \mathrm{PM} \leq 90^\circ$</td></tr>
+          <tr><td>Slew rate</td><td>$\geq 20$ V/$\mu$s</td></tr>
+        </tbody>
+      </table>
+
+      <p>The design specifications are shown below.</p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Constraint</th>
+            <th>Limit</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- FIX 1: corrected 45 μm -> 45 nm -->
+          <tr><td>Minimum transistor length</td><td>45 nm</td></tr>
+          <tr><td>Maximum transistor length</td><td>$5 \times L_{\min}$</td></tr>
+          <tr><td>Maximum width per multiplier</td><td>4 $\mu$m</td></tr>
+          <tr><td>Maximum multiplier of transistors</td><td>50</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Op-amp Description</h3>
+
+      <p>
+        This operational amplifier has two main parts, a two-stage gain and a common-mode feedback circuit. The two stages have a gain of approximately
+      </p>
+
+      <div class="math-block">
+        \[
+        A = g_{m1}\left(r_{01} \parallel r_{03}\right)\; g_{m6}\left(r_{06} \parallel r_{08}\right)
+        \].
+      </div>
+
+      <p>
+        The common-mode feedback circuit sets the common mode of the output to a particular value near the nominal output common-mode.
+        The CMFB circuit adjusts $v_{cmfb}$ to counter any fluctuations in V1 and V2 in figure 1.
+        The gate of M11 senses the average value of V1 and V2 and adjusts Vcmfb at a fixed value(near the nominal output CM).<br>
+      </p>
+
+      <h2>Initial Values</h2>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Component</th>
+            <th>Value</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>$V_{bias}$</td><td>0.5V</td></tr>
+          <tr><td>$V_{ref}$</td><td>0.5V</td></tr>
+          <tr><td>$R_{CM}$</td><td>1 M$\Omega$</td></tr>
+          <tr><td>$R_{C}$</td><td>1 k$\Omega$</td></tr>
+          <tr><td>$C_{C}$</td><td>1 pF</td></tr>
+          <tr><td>Transistor length</td><td>45 nm</td></tr>
+          <tr><td>Transistor width</td><td>120 nm</td></tr>
+          <tr><td>Multiplier</td><td>1</td></tr>
+        </tbody>
+      </table>
+
+      <figure>
+        <img src="images/opamp_photos/cadence_schematic.png" alt="Cadence schematic">
+        <figcaption>Figure 2: Cadence Schematic</figcaption>
+      </figure>
+
+      <p>
+        With these initial values, I began testing its functionality by testing it as a closed loop buffer. I found that the signal would clip at lower voltages or simply converge to vdd or ground. When testing with an open loop, the gain was very small (around 2x). <br>
+      </p>
+
+      <p>
+        I started by making the multiplier W = 50 for all transistors, as this increases $g_m$, causing more current and more gain, allowing me to start testing for other specifications.
+      </p>
+
+      <h2>Low-Frequency Differential Gain and Common-Mode</h2>
+
+      <p>
+        To increase the low-frequency differential gain, I could either increase $g_m$ or $r_0$, as shown in the gain equation found in 1.1.
+        Since I have already made $g_m$ large by making the widths very large, the other option is to increase $r_0$ by increasing the lengths of the transistors.
+        Hence, I tested increasing all transistor lengths in the gain stages except M0 (as it is only used as a current source and not part of the gain),
+        and found a significant increase in my gain, as shown in the figure below.
+      </p>
+
+      <figure>
+        <img src="images/opamp_photos/amplification.png" alt="Amplification plot">
+        <figcaption>Figure 3: Amplification of 1mV wave with transistor lengths 45nm, 90nm, 135nm</figcaption>
+      </figure>
+
+      <p>
+        Finally, with a length of 200nm, I was able to reach a gain of approximately 209x, which converts to 46.4dB, which meets the design specification of 46dB.
+        This is shown below through an AC sweep at low frequencies with a 1V magnitude. From this plot, we also see that the output DC level is around 500mV with an input signal at 500mV.
+      </p>
+
+      <figure>
+        <img src="images/opamp_photos/LFQG.png" alt="Low frequency gain plot">
+        <figcaption>Figure 4: Low Frequency Gain with 1V AC Sweep</figcaption>
+      </figure>
+
+      <h2>Unity-Gain Frequency</h2>
+
+      <p>
+        To measure the unity-gain frequency, I connected the circuit in an open loop and measured when the magnitude of the Bode Plot reached 0dB (1V).
+        I found that almost all input parameters affected UGF. The values of Cc and Rc moved the poles and zero such that increasing Rc and lowering Cc generally increased UGF.
+        After a certain point, varying Rc and Cc made very little difference to UGF compared to the next key factor: increasing the widths.
+        I ended up increasing the widths of the second stage 2x more than the first stage transistors, as that ended up being more effective for increasing UGF.
+        I also tried making the second stage transistors LVT devices, which increased my UGF by around 200Mhz, but decreased my differential gain and increased my power consumption.
+        In my final values chosen, the op-amp reached a UGF of 577MHz as shown in figure 5 below.
+      </p>
+
+      <figure>
+        <img src="images/opamp_photos/UGF.png" alt="Unity gain frequency plot">
+        <figcaption>Figure 5: Unity Gain Frequency: 577 MHz</figcaption>
+      </figure>
+
+      <h2>Power Consumption</h2>
+
+      <p>
+        Power consumption of the two-stage amplifier was very difficult to control, especially while meeting unity-gain frequency and differential gain requirements.
+        It was easy to increase unity gain frequency by increasing the widths, but this would drive the power consumption very high.
+        By some trial and error of varying the lengths, widths, Vbias, and Vref, I was able to limit the power consumption to be near specification,
+        while keeping UGF and differential gain close to specification. <br>
+      </p>
+
+      <p>
+        I measured the current supplied through vdd to be $415 \mu A$ and the current through vdd of the CMFB circuit to be $27 \mu A$.
+        These convert to the total power consumption being 0.415 mW and the CMFB power being $27 \mu W$.
+      </p>
+
+      <figure>
+        <img src="images/opamp_photos/Power.png" alt="Power consumption measurement">
+        <figcaption>Figure 6: Two-Stage and CMFB Power Consumption</figcaption>
+      </figure>
+
+      <h2>Results and Conclusion</h2>
+
+      <p>
+        My final design met the specifications for nominal input and output common-mode and CMFB circuit power(27 $\mu$ W) and low frequency differential gain(46.4dB).
+        The two-stage power consumption was 0.415mW, slightly higher than the specified 0.4mW.
+        The small-signal unity-gain frequency was 577 Mhz, just under the required 600Mhz.
+      </p>
+
+      <p><br></p>
+
+      <p>
+        Through this project, I learnt how difficult it is to size analog devices accurately, as the sheer number of inputs and the fact that there are no known values of certain parameters results in very difficult calculations.
+        I was surprised as to how much a small change could drastically affect the total system.
+        For example, by varying Vref and Vbias by around 5$\%$, the unity gain frequency, differential gain, and power would change significantly, usually more than 10$\%$.
+        This taught me how difficult it is to build a system which is fully functional even if the input parameters vary.
+      </p>
+
+    </main>
   </div>
+
+  <footer>
+    <div class="foot">
+      <div>Derek Wei</div>
+      <div>53485314</div>
+    </div>
+  </footer>
 </body>
 </html>
