@@ -3,35 +3,235 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Autonomous Collection Robot — Derek Wei</title>
-  <link rel="stylesheet" href="/styles/main.css" />
+  <title>Autonomous Stuffie Retrieval Robot</title>
+
+  <!-- MathJax (LaTeX rendering in HTML) -->
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']],
+        processEscapes: true
+      },
+      options: { renderActions: { addMenu: [] } }
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+
+  <style>
+    :root{
+      --text:#111827;
+      --muted:#6b7280;
+      --border:#e5e7eb;
+      --card:#f9fafb;
+    }
+    body{
+      margin:0;
+      font:16px/1.65 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      color:var(--text);
+      background:#fff;
+    }
+    .page{
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 0 16px 80px;
+    }
+    header{
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 14px;
+      margin-bottom: 28px;
+    }
+    .course-line{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      align-items:flex-start;
+      color:var(--muted);
+      font-size:14px;
+    }
+    h1{
+      font-size:28px;
+      margin:10px 0 4px;
+      line-height:1.2;
+      letter-spacing:-0.02em;
+    }
+    .author{
+      color:var(--muted);
+      font-size:14px;
+    }
+    h2{
+      font-size:20px;
+      margin:34px 0 10px;
+      line-height:1.25;
+      letter-spacing:-0.01em;
+    }
+    h3{
+      font-size:16px;
+      margin:18px 0 8px;
+      line-height:1.3;
+    }
+    p{ margin:10px 0; }
+    figure{
+      margin: 18px 0;
+      padding: 14px;
+      border: 1px solid var(--border);
+      background: var(--card);
+      border-radius: 12px;
+    }
+    figure img{
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 8px;
+    }
+    figcaption{
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    table{
+      width:100%;
+      border-collapse:collapse;
+      margin: 14px 0 18px;
+      border:1px solid var(--border);
+      border-radius:12px;
+      overflow:hidden;
+      background:#fff;
+    }
+    th, td{
+      text-align:left;
+      padding:10px 12px;
+      border-bottom:1px solid var(--border);
+      vertical-align:top;
+    }
+    th{
+      background:var(--card);
+      font-weight:650;
+    }
+    tr:last-child td{ border-bottom:none; }
+    .math-block{ overflow-x:auto; padding:10px 0; }
+    footer{
+      position:fixed;
+      left:0; right:0; bottom:0;
+      background:rgba(255,255,255,0.92);
+      backdrop-filter: blur(8px);
+      border-top:1px solid var(--border);
+    }
+    footer .foot{
+      max-width:900px;
+      margin:0 auto;
+      padding:10px 16px;
+      display:flex;
+      justify-content:space-between;
+      color:var(--muted);
+      font-size:13px;
+    }
+    @media print{
+      footer{ position:static; }
+      .page{ padding-bottom:0; margin:0 auto; }
+      header{ border:none; }
+      figure, table{ break-inside: avoid; }
+    }
+  </style>
 </head>
+
 <body>
-  <div class="container">
-    <p><a href="/" style="color:#2563eb;">← Back</a></p>
-    <h1>Autonomous Collection Robot</h1>
-    <p class="subhead">2025 · Team Project · UBC</p>
+  <div class="page">
 
-    <div class="card" style="display:block;">
-      <img class="thumb" style="width:100%;height:320px;" src="/images/robot.jpg" alt="Robot image">
-      <div class="cardText" style="padding-top:14px;">
-        <h2>Highlights</h2>
-        <ul>
-          <li>Designed and built an autonomous stuffie detection and retrieval robot. :contentReference[oaicite:4]{index=4}</li>
-          <li>Line following + ESP32 control + magnet detection with I2C communication. :contentReference[oaicite:5]{index=5}</li>
-          <li>Power distribution + protection with LiPo; servo/stepper/DC motor control; encoders. :contentReference[oaicite:6]{index=6}</li>
-          <li>Integrated circuitry into one KiCad PCB with noise protection; soldered + tested. :contentReference[oaicite:7]{index=7}</li>
-          <li>Implemented PID line following in C++. :contentReference[oaicite:8]{index=8}</li>
-        </ul>
-
-        <h2>Media / Links</h2>
-        <ul>
-          <li><a href="#" style="color:#2563eb;">GitHub repo</a> (add)</li>
-          <li><a href="#" style="color:#2563eb;">Demo video</a> (add)</li>
-          <li><a href="#" style="color:#2563eb;">Report</a> (add)</li>
-        </ul>
+    <header>
+      <div class="course-line">
       </div>
-    </div>
+      <h1>Autonomous Pet Retrieval Robot</h1>
+      <div class="author">Derek Wei, Aidan Webb, Samuel Sjoden, Noam Miller Snitz, Addison Craik</div>
+    </header>
+
+    <figure>
+        <img src="images/robot.jpg" alt="Op-amp schematic">
+      </figure>
+
+    <main>
+
+      <h2>Overview</h2>
+        This summer, my teammates and I built a completely autonomous robot capable of line following, detecting pet 
+        stuffies with a magnetometer, and retrieving them back to safety through a zipline.On the mechanical side, our robot featured a 
+        rotating 3-joint arm with 4-wheel drive, and a bucket with two spring-loaded wheeled hooks. The electrical components
+        of our robot were integrated into one central PCB with circuitry for ESP-32 control, power management,
+        H-Bridges, and various sensors. 
+      <p>
+        
+      </p>
+      <figure>
+        <img src="images/robotphotos/Robot1.webp">
+      </figure>
+
+      <h3>My Contributions</h3>
+
+      <p>
+        I took on most of the electrical design and assembly in the team. I designed circuitry for each subsystem and tested them on a breadboard before committing to a PCB. 
+        Throughout the six-week period, I made three iterations of our combined PCB in KiCad, optimizing for size and signal integrity while adding more features.
+      </p>
+
+      <figure>
+        <img src="images/robotphotos/3pcbs.jpg" alt="3PCBs">
+        <figcaption>Three Iterations from oldest to newest(left to right)</figcaption>
+      </figure>
+
+      <p><strong>The final combined PCB featured:</strong></p>
+
+      <ul class="clean-list">
+        <li>Control board with two ESP32 microcontrollers</li>
+        <li>Power management from 16&nbsp;V and 9&nbsp;V LiPo batteries</li>
+        <li>Dual H-bridge motor drivers</li>
+        <li>Digitized line following circuitry</li>
+        <li>I<sup>2</sup>C bus for a magnetometer and accelerometer</li>
+        <li>Hysteresis filtering for rotary encoders</li>
+        <li>Opto-coupling between sensitive and noisy components</li>
+        <li>Servo and stepper motor control</li>
+      </ul>
+
+      Here is the entire circuit schematic(Version 1):
+      <figure>
+        <img src="images/robotphotos/Schematic.webp" alt="circuit schematic">
+        <figcaption>Circuit Schematic</figcaption>
+      </figure>
+
+      Final version of assembled PCB:
+      <figure>
+        <img src="images/robotphotos/FinalCircuit.webp" alt="circuit schematic">
+        <figcaption>Final PCB</figcaption>
+      </figure>
+
+      Final electrical assembly:
+      <figure>
+        <img src="images/robotphotos/FinalAssembly.webp" alt="circuit schematic">
+        <figcaption>Final electrical assembly</figcaption>
+      </figure>
+
+      <figure>
+      <video controls preload="metadata" width="100%" poster="images/video_thumb.jpg">
+      <source src="images/robotphotos/IMG_4246.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+      </video>
+      <figcaption>Autonomous retrieval and throw demo</figcaption>
+      </figure>
+
+
+
+
+
+
+
+
+
+
+
+    </main>
   </div>
+
+  <footer>
+    <div class="foot">
+      <div>Derek Wei</div>
+    </div>
+  </footer>
 </body>
 </html>
