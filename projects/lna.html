@@ -3,23 +3,420 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>LNA Report PDF</title>
-  <style>
-    html, body {
-      margin: 0;
-      width: 100%;
-      height: 100%;
-    }
+  <title>Design, Analysis, and Simulation of a 5.25 GHz CMOS LNA</title>
 
-    embed {
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']],
+        processEscapes: true
+      },
+      options: { renderActions: { addMenu: [] } }
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+
+  <style>
+    :root {
+      --text: #111827;
+      --muted: #6b7280;
+      --border: #e5e7eb;
+      --card: #f9fafb;
+      --blue: #2563eb;
+    }
+    body {
+      margin: 0;
+      font: 16px/1.65 system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color: var(--text);
+      background: #fff;
+    }
+    .page {
+      max-width: 920px;
+      margin: 36px auto;
+      padding: 0 16px 90px;
+    }
+    header {
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 14px;
+      margin-bottom: 24px;
+    }
+    .topline {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      color: var(--muted);
+      font-size: 14px;
+      flex-wrap: wrap;
+    }
+    .back {
+      color: var(--blue);
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .back:hover { text-decoration: underline; }
+    h1 {
+      font-size: 30px;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      margin: 12px 0 6px;
+    }
+    h2 {
+      font-size: 21px;
+      margin: 34px 0 10px;
+      line-height: 1.25;
+    }
+    h3 {
+      font-size: 17px;
+      margin: 22px 0 8px;
+      line-height: 1.3;
+    }
+    p { margin: 10px 0; }
+    ul { margin: 10px 0 10px 24px; }
+    .actions {
+      margin-top: 10px;
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      font-size: 14px;
+    }
+    .actions a {
+      color: var(--blue);
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .actions a:hover { text-decoration: underline; }
+    figure {
+      margin: 18px 0;
+      padding: 14px;
+      border: 1px solid var(--border);
+      background: var(--card);
+      border-radius: 12px;
+    }
+    figure img {
       width: 100%;
-      height: 100%;
-      border: 0;
+      height: auto;
       display: block;
+      border-radius: 8px;
+      background: #fff;
+    }
+    figcaption {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 14px 0 18px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      background: #fff;
+    }
+    th, td {
+      text-align: left;
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+    th {
+      background: var(--card);
+      font-weight: 650;
+    }
+    tr:last-child td { border-bottom: none; }
+    .math-block { overflow-x: auto; padding: 6px 0; }
+    .muted { color: var(--muted); }
+    footer {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(255, 255, 255, 0.93);
+      backdrop-filter: blur(8px);
+      border-top: 1px solid var(--border);
+    }
+    .foot {
+      max-width: 920px;
+      margin: 0 auto;
+      padding: 10px 16px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    @media (max-width: 720px) {
+      h1 { font-size: 25px; }
+      .page { padding-bottom: 110px; }
+    }
+    @media print {
+      footer { position: static; }
+      .page { margin: 0 auto; padding-bottom: 0; }
+      header { border: none; }
+      figure, table { break-inside: avoid; }
     }
   </style>
 </head>
 <body>
-  <embed src="../ELEC404_LNA.pdf" type="application/pdf" />
+  <div class="page">
+    <header>
+      <div class="topline">
+        <a class="back" href="/">&larr; Back to portfolio</a>
+        <span>Derek Wei &middot; March 2026 &middot; UBC</span>
+      </div>
+      <h1>Design, Analysis, and Simulation of a 5.25-GHz CMOS Low-Noise Amplifier in 45-nm Technology</h1>
+    </header>
+
+    <main>
+      <h2>1. Introduction</h2>
+      <p>
+        This report presents the design and simulation of a 5.25 GHz fully integrated CMOS LNA in a 45 nm process.
+        The required specifications include $|S_{11}| &lt; -10$ dB, $|S_{21}| &gt; 15$ dB, $\mathrm{NF} &lt; 2.2$ dB,
+        and $\mathrm{IIP3} &gt; -7$ dBm over $f_c \pm 100$ MHz, with $V_{DD}=1.0$ V and $C_L=50$ fF.
+        A common-source LNA with inductive source degeneration and resonant load is chosen to balance gain,
+        input matching, noise, bandwidth, linearity, and power.
+      </p>
+
+      <h2>2. Specifications and Design Targets</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Metric</th>
+            <th>Requirement</th>
+            <th>Condition</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Center frequency</td><td>$f_c = 5.25$ GHz</td><td>&mdash;</td></tr>
+          <tr><td>Input match</td><td>$|S_{11}| &lt; -10$ dB</td><td>$f_c \pm 100$ MHz</td></tr>
+          <tr><td>Output match</td><td>$|S_{22}| &lt; -10$ dB</td><td>$f_c \pm 100$ MHz</td></tr>
+          <tr><td>Reverse isolation</td><td>$|S_{12}| &lt; -30$ dB</td><td>$f_c \pm 100$ MHz</td></tr>
+          <tr><td>Forward gain</td><td>$|S_{21}| &gt; 15$ dB</td><td>$f_c \pm 100$ MHz</td></tr>
+          <tr><td>Noise figure</td><td>$\mathrm{NF} &lt; 2.2$ dB</td><td>$f_c \pm 100$ MHz</td></tr>
+          <tr><td>Linearity</td><td>$\mathrm{IIP3} &gt; -7$ dBm</td><td>2-tone, 1 MHz spacing</td></tr>
+          <tr><td>Power</td><td>Minimize power consumption</td><td>&mdash;</td></tr>
+          <tr><td>Load capacitance</td><td>$C_L = 50$ fF</td><td>&mdash;</td></tr>
+          <tr><td>Supply</td><td>$V_{DD} = 1.0$ V</td><td>&mdash;</td></tr>
+        </tbody>
+      </table>
+
+      <h2>3. Architecture and Small-Signal Overview</h2>
+      <p>
+        The implemented LNA uses source degeneration ($L_S$) and input reactance tuning for 50 $\Omega$ input matching.
+        The output load is formed by on-chip inductor $L_D$ resonating with total output capacitance (including $C_L$),
+        creating an effective parallel resistance $R_p$ near $f_c$ that sets gain. A cascode device improves reverse isolation
+        $|S_{12}|$ and reduces Miller feedback.
+      </p>
+
+      <figure>
+        <img src="images/lna/schematic_white.png" alt="LNA schematic" />
+        <figcaption>Figure 1. Final LNA schematic.</figcaption>
+      </figure>
+
+      <h2>4. Design Methodology (First-Pass Values)</h2>
+
+      <h3>4.1 Load Network First: Maximizing $R_p$ and Verifying SRF</h3>
+      <p>
+        The load network is designed first because at resonance the gain can be approximated by:
+      </p>
+      <div class="math-block">\[
+        |A_v| \approx g_m R_p
+      \]</div>
+      <p>
+        The inductor is modeled with PDK parasitics and the required $C_L = 50$ fF is included. From SP analysis,
+        $Z_{11}$ is extracted and quality factor is computed by:
+      </p>
+      <div class="math-block">\[
+        Q(\omega) = \frac{\Im\{Z_{11}(\omega)\}}{\Re\{Z_{11}(\omega)\}}
+      \]</div>
+      <p>At resonance, the effective load resistance is approximated by:</p>
+      <div class="math-block">\[
+        R_p \approx \Re\{Z_{11}(\omega_0)\}
+      \]</div>
+      <p>First-pass selection: $L_D = 2$ nH, SRF $= 10.3$ GHz, and $R_p \approx 500\ \Omega$ at $f_c$.</p>
+
+      <figure>
+        <img src="images/lna/Rp_sweep.png" alt="Q and Re Z11 versus Ld" />
+        <figcaption>Figure 2. Extracted $Q$ and $\Re\{Z_{11}\}$ vs. $L_D$ around $f_c$.</figcaption>
+      </figure>
+
+      <h3>4.2 Required $g_m$ from Gain Target ($|S_{21}|$)</h3>
+      <p>The first-pass linear gain target is:</p>
+      <div class="math-block">\[
+        |A_v|_{\mathrm{req}} = 10^{15/20}
+      \]</div>
+      <p>So the required transconductance estimate is:</p>
+      <div class="math-block">\[
+        g_{m,\mathrm{req}} \approx \frac{|A_v|_{\mathrm{req}}}{R_p}
+      \]</div>
+
+      <h3>4.3 Input Matching and Input Quality Factor $Q_{in}$</h3>
+      <p>
+        To satisfy $|S_{11}| &lt; -10$ dB, input network tuning targets $Z_{in} \approx 50\ \Omega$ at $f_c$.
+        With inductive source degeneration, the real part of $Z_{in}$ is primarily controlled by $L_S$ and effective $g_m$.
+      </p>
+      <ul>
+        <li>Choose $L_S$ so $\Re\{Z_{in}\} \approx 50\ \Omega$ near $f_c$.</li>
+        <li>Tune gate reactance ($L_G$ and input capacitances) so $\Im\{Z_{in}\} \approx 0$ at $f_c$.</li>
+      </ul>
+
+      <h3>4.4 Output Matching ($|S_{22}|$) and Reverse Isolation ($|S_{12}|$)</h3>
+      <p>
+        Output matching is achieved by tuning load resonance and matching elements so $Z_{out} \approx 50\ \Omega$ at $f_c$
+        while preserving gain. Reverse isolation is improved using cascode action and bias decoupling with a target of
+        $|S_{12}| &lt; -30$ dB.
+      </p>
+      <p>
+        For first-pass output matching values, $C_s$ and $C_p$ were tuned through Cadence sweeps instead of full hand derivation.
+      </p>
+
+      <figure>
+        <img src="images/lna/hand_calcs.png" alt="Hand calculations" />
+        <figcaption>Figure 3. Hand calculations for first-pass values.</figcaption>
+      </figure>
+
+      <h3>4.5 Cadence Simulation Tuning</h3>
+      <p>
+        Initial hand-calculated values did not meet all S-parameter specs. Reducing $L_g$ from 13 nH to about 4 nH moved
+        $S_{21}$ and $S_{11}$ peaks near 5.25 GHz. Final tuning was then completed by iterating component values and observing
+        their effect on specifications.
+      </p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Parameter</th>
+            <th>Final Value</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>$L_g$</td><td>2.85 nH</td></tr>
+          <tr><td>$L_d$</td><td>1.85 nH</td></tr>
+          <tr><td>$L_s$</td><td>0.35 nH</td></tr>
+          <tr><td>$C_{ext}$</td><td>125 fF</td></tr>
+          <tr><td>$W_m$</td><td>110</td></tr>
+          <tr><td>$C_{series}$</td><td>420 fF</td></tr>
+          <tr><td>$C_p$</td><td>1.1 pF</td></tr>
+          <tr><td>$V_{bias2}$</td><td>1.0 V</td></tr>
+          <tr><td>$V_{bias1}$</td><td>0.66 V</td></tr>
+        </tbody>
+      </table>
+
+      <h3>4.6 Noise Figure</h3>
+      <p>
+        The most effective changes for reducing NF were increasing transistor width and decreasing $L_g$.
+        Noise summary analysis showed inductor loss in $L_g$ as a dominant noise contributor.
+        Increasing width from 50 &micro;m to 110 &micro;m and reducing $L_g$ from 4 nH to 2.85 nH moved NF well within spec.
+      </p>
+
+      <figure>
+        <img src="images/lna/nf_vs_freq.png" alt="Noise figure vs frequency" />
+        <figcaption>Figure 4. Simulated noise figure vs. frequency.</figcaption>
+      </figure>
+
+      <h3>4.7 Two-Tone Linearity and $\mathrm{IIP3}$ Extraction</h3>
+      <p>Two-tone test setup:</p>
+      <div class="math-block">\[
+        f_1 = f_c, \quad f_2 = f_c + 1\ \mathrm{MHz}
+      \]</div>
+      <p>
+        IIP3 was extracted at input power of -30 dBm where fundamentals still follow 1 dB/dB slope and IM3 terms follow
+        3 dB/dB slope, indicating operation in the expected weakly nonlinear region before gain compression. The measured result
+        was $\mathrm{IIP3} = -6.9$ dBm, within spec.
+      </p>
+
+      <figure>
+        <img src="images/lna/iip3_extraction.png" alt="IIP3 extraction plot" />
+        <figcaption>Figure 5. Two-tone IM3 measurement and IIP3 extraction.</figcaption>
+      </figure>
+
+      <h3>4.8 Power Minimization</h3>
+      <p>DC power is given by:</p>
+      <div class="math-block">\[
+        P_{DC} = V_{DD} I_{DD}
+      \]</div>
+      <p>
+        After all specs were met, $I_{DD}$ was reduced as much as possible by reducing width while re-verifying
+        $|S_{21}|$, $|S_{11}|$, $|S_{22}|$, NF, and IIP3 at each step. Final power was minimized to 2.8 mW.
+      </p>
+
+      <h3>4.9 S-Parameters Plot</h3>
+      <figure>
+        <img src="images/lna/sparams_all.png" alt="S-parameters over frequency" />
+        <figcaption>Figure 6. Simulated $|S_{11}|$, $|S_{12}|$, $|S_{21}|$, and $|S_{22}|$ vs. frequency.</figcaption>
+      </figure>
+
+      <h2>5. Final Results</h2>
+      <figure>
+        <img src="images/lna/final.png" alt="Final results summary" />
+        <figcaption>Figure 7. Final S-parameters, NF, IIP3, and power summary.</figcaption>
+      </figure>
+
+      <h3>5.1 Operating Point Summary</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Device</th>
+            <th>$W$</th>
+            <th>$L$</th>
+            <th>$I_D$</th>
+            <th>$V_{GS}$</th>
+            <th>$V_{DS}$</th>
+            <th>$g_m$</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>$M_1$</td>
+            <td>110 &micro;m</td>
+            <td>45 nm</td>
+            <td>2.82429 mA</td>
+            <td>654.31 mV</td>
+            <td>323.988 mV</td>
+            <td>33.49 mS</td>
+          </tr>
+          <tr>
+            <td>$M_2$</td>
+            <td>110 &micro;m</td>
+            <td>45 nm</td>
+            <td>2.82429 mA</td>
+            <td>670.794 mV</td>
+            <td>661.526 mV</td>
+            <td>35.0248 mS</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>5.2 Specification Compliance</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Metric</th>
+            <th>Spec</th>
+            <th>Achieved</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>$|S_{11}|$</td><td>&lt; -10 dB</td><td>Achieved</td></tr>
+          <tr><td>$|S_{21}|$</td><td>&gt; 15 dB</td><td>Achieved</td></tr>
+          <tr><td>$|S_{12}|$</td><td>&lt; -30 dB</td><td>Achieved</td></tr>
+          <tr><td>$|S_{22}|$</td><td>&lt; -10 dB</td><td>Achieved</td></tr>
+          <tr><td>NF</td><td>&lt; 2.2 dB</td><td>Achieved</td></tr>
+          <tr><td>IIP3</td><td>&gt; -7 dBm</td><td>Achieved</td></tr>
+          <tr><td>$P_{DC}$</td><td>Minimized</td><td>2.8 mW</td></tr>
+        </tbody>
+      </table>
+
+      <h2>6. Conclusion</h2>
+      <p>
+        A 5.25 GHz CMOS LNA was designed and simulated in a 45 nm process. The final circuit meets all key specifications,
+        including gain, input/output matching, reverse isolation, noise figure, and linearity over $f_c \pm 100$ MHz.
+        The design achieves approximately 2.0 dB noise figure, $\mathrm{IIP3} \approx -6.9$ dBm (1 MHz two-tone spacing),
+        and total power consumption of about 2.8 mW from a 1.0 V supply.
+      </p>
+    </main>
+  </div>
+
+  <footer>
+    <div class="foot">Derek Wei &middot; CMOS LNA Project</div>
+  </footer>
 </body>
 </html>
